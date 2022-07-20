@@ -12,7 +12,7 @@ The full source code for this post can be found on
 This post was motivated by the following question: *what would be the
 simplest problem we could formulate to introduce a computer science
 student to the field of bioinformatics?* This is the answer I came up
-with. This is a (hopefully) fun attempt to analyze easily accessible
+with, and is a (hopefully) fun attempt to analyze easily accessible
 biological data with very little code or effort. The question we will
 address is the following:
 
@@ -46,7 +46,9 @@ Conversely, relying purely on traits can be misleading. Bats and birds
 have wings and other similar physical traits, but bats are more
 closely related to cats than to birds. Similarly, mammalian aquatic
 animals like whales and dolphins are closer to wolves and alpacas than
-to fish. These are examples of [convergent
+to fish (by "closer" I mean that the speciation event of the most
+recent common ancestor occurred more recently). These are examples of
+[convergent
 evolution](https://en.wikipedia.org/wiki/Convergent_evolution), where
 two species have similar traits not necessarily because they are
 related by recent common ancestry, but because they are under similar
@@ -57,12 +59,17 @@ similarity between two species: simply measure the "similarity"
 between the genome sequences, where the sequences are strings of
 characters (A, C, G, T) representing chromosomes. This is easier said
 than done. First, we need to define what "similarity" of sequences
-means. Genome divergence occurs through a sequence of transformations:
-Mutations, nucleotide insertions, deletions, duplications of certain
-sequences, and possible translocations and inversions of large
-portions of the genome. Can you think of a similarity metric between
-two strings that would identify similar genomic sequences under these
-potential differences? To me at least it is not immediately obvious.
+means. When speciation occurs, independent genome divergence occurs
+through a sequence of transformations: mutations, nucleotide
+insertions, deletions, duplications of certain sequences, and possible
+translocations and inversions of large portions of the genome. Simply
+put, pieces of DNA can move around, mutate, copy-paste themselves, and
+other small operations that can significantly change the resulting
+sequence. Can you think of a similarity metric between two strings
+that would identify similar genomic sequences under these potential
+change operations? Think if edit distance would be enough. Yes? No? To
+me at least it is not immediately obvious. Simple translocations of
+genome sequences can significantly change the edit distance.
 
 In most bioinformatics methods used today, comparison of sequences is
 done through (possibly some modification of) the [local alignment of
@@ -106,16 +113,16 @@ $B$ and vice-versa. By studying the alignment matrix, we can learn, in
 great detail, what likely happened to certain genome subsequences, and
 quantify how exactly they diverged between the two species.
 
-**The limitation** : Quantifying similarities between species through
-local alignments is not immediately obvious. The highest alignment
-score (which, recall, is the most similar subsequence) may not be
-representative of the global similarity, and this becomes more true
-when comparing more distant species. We can use other high scores to
-reconstruct the divergence of subsequences, but it is not entirely
-obvious how to combine high scores in the matrix into one global
-metric of similarity between sequences. Furthermore, many genomes,
-including most mammalians, are billions of sequences long. A $O(|A|
-|B|)$ algorithm is prohibitive both in time and memory.
+**The limitation of alignments**: Quantifying similarities between
+species through local alignments is not immediately obvious. The
+highest alignment score (which, recall, is the most similar
+subsequence) may not be representative of the global similarity, and
+this becomes more true when comparing more distant species. We can use
+other high scores to reconstruct the divergence of subsequences, but
+it is not entirely obvious how to combine high scores in the matrix
+into one global metric of similarity between sequences. Furthermore,
+many genomes, including most mammalians, are billions of sequences
+long. A $O(|A| |B|)$ algorithm is prohibitive both in time and memory.
 
 My proposition to solve this problem is to take a step back and think
 about the absolutely most naive way to compare two sequences: Consider
@@ -123,23 +130,28 @@ small sequences of length $k$ (for example, $k = 12$), which we will
 call $k$-mers. What if we just counted $k$-mers in two sequences and
 calculated the sum of squares of their differences? This is analogous
 to measuring the similarity of two books based on their word
-frequencies.
+frequencies. Two dictionaries written by different people would be
+very similar, and so would two math textbooks that would constantly
+use words like "function", "variable", "number"< etc.
 
 This approach is not very rigorous, and it may not necessarily work,
 but it is a start when thinking of a complex problem. Take a second to
 think about how this could break: Could two highly similar sequences
 have highly different $k$-mer counts?  Conversely, could two very
-different sequences have similar $k$-mer counts?
+different sequences have similar $k$-mer counts? If you cannot
+convince yourself that it can break easily, then the approach may have
+some merit.
 
-Hopefully I will be able to show you that this extremely naive
+In fact, hopefully I will be able to show you that this extremely naive
 approach leads to somewhat satisfiable results. The take-home message
 should be that these simple approaches should often not be overlooked.
 
-By the way, this is the most basic example of a huge field of
-[alignment-free genome comparison
-methods](https://academic.oup.com/bib/article-abstract/15/3/343/182355),
-a beautiful field in and of itself with various applications in
-metagenomics, virology and population genetics.
+By the way, this is the most basic example of an [alignment-free
+genome comparison
+method](https://academic.oup.com/bib/article-abstract/15/3/343/182355).
+Alignment-free sequence comparison research a beautiful field in and
+of itself with various applications in metagenomics, virology and
+population genetics.
 
 # Problem formulation
 
@@ -213,10 +225,10 @@ a $k$-mer frequency matrix
 
 # The C++ code
 
-Let's first write a struct that will store $k$-mers. We will use $k =
-12$, and pre-allocate counts for all $4^12$ possible $k$-mers. We will
-assume counts fit into a 32-bit integer, since $2^32$ is larger than
-any of the genomes we are using.
+Let's first write a struct that will store $k$-mer frequencies for a
+genome. We will use $k = 12$, and pre-allocate counts for all $4^{12}$
+possible $k$-mers. We will assume counts fit into a 32-bit integer,
+since $2^{32}$ is larger than any of the genomes we are using.
 
 ```cpp
 struct KmerStats {
@@ -360,7 +372,7 @@ whale genomes/balAcu1.fa
 ```
 
 And our `main` function simply reads this file and calls the functions
-we created. When done, our output will be a table with `4^12` rows and
+we created. When done, our output will be a table with `4^{12}` rows and
 `n` columns, where `n` is the number of species. The element in row
 `i` and column `j` is the frequency of $k$-mer `i` (as its binary
 representation) in species `j`. This is a data frame that we can read
@@ -490,7 +502,7 @@ writing output
 So we used a little under 2 minutes and 1.6 GB to create our table. Note
 that the high memory use is because we used OpenMP to count the k-mers
 of all 7 species in parallel, so all `KmerStats` objects were loaded.
-Each `KmerStats` object allocates a vector of size `4^12` with 32
+Each `KmerStats` object allocates a vector of size `4^{12}` with 32
 bits, so each takes 64 MB. Then each thread uses an additional 250 MB
 as pre-allocation for the chromosomes.
 
