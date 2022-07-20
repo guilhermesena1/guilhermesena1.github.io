@@ -221,7 +221,7 @@ mv *.fa genomes
 ```
 
 Now that we have the FASTA files, we will read them in C++ and create
-a $k$-mer frequency matrix
+a $k$-mer frequency matrix.
 
 # The C++ code
 
@@ -335,7 +335,7 @@ characters and two-bit representations. We set 0 for the characters
 `T`. The rest we set to 4, and if we read a character that is a 4 in
 our look-up, we replace with a nucleotide:
 
-```
+```cpp
 static const uint8_t encode_char[256] = {
   4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, //4
   4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, //17
@@ -455,7 +455,7 @@ make all
 
 and run the program by writing
 
-```
+```bash
 ./phylo genomes.txt >kmer-counts.tsv
 ```
 
