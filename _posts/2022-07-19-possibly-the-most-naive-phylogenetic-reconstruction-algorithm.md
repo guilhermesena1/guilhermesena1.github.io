@@ -134,6 +134,16 @@ frequencies. Two dictionaries written by different people would be
 very similar, and so would two math textbooks that would constantly
 use words like "function", "variable", "number"< etc.
 
+Note: we are shifting our thought process from "similarity"  -a number
+that is higher the more similar two sequences are - to "distance".  A
+distance function between two strings is a function $d$ such that, for
+strings $A$ and $B$, $d(A, B) = 0$ if and only if $A = B$, $d(A,B) =
+d(B,A)$ and for any three strings $A, B, C$, $d(A,B) \leq d(A,C) +
+d(B,C)$. The edit distance is an example of a distance metric between
+strings, and we can also prove that our $k$-mer distance also is,
+since our $k$-mer counts induces a $4^k$-dimensional vector for which
+Euclidean geometry properties apply.
+
 This approach is not very rigorous, and it may not necessarily work,
 but it is a start when thinking of a complex problem. Take a second to
 think about how this could break: Could two highly similar sequences
@@ -155,10 +165,11 @@ population genetics.
 
 # Problem formulation
 
-We are given a set of $n$ species and their reference genomes of size
-$m_1, \cdots, m_n$. We wish to obtain two things:
+We are given a set of $n$ species and their reference genome sequences
+$S_1, \cdots, S_n$, which is the concatenation of all of their
+chromosomes. We wish to obtain the following.
 
- * A $n \times n$ similarity matrix between all pairs of species
+ * A $n \times n$ distance matrix between all pairs of species
  * A phylogenetic tree reconstructing the ancestral speciation events
    that led to the observed species, based on the similarity matrix.
 
@@ -176,7 +187,8 @@ we see the genome sequence, with some line breaks after at most 80
 characters (so the sequence can be read in a terminal).  For example,
 below are the first lines of the cat genome (`felCat9.fa`):
 
-```
+```bash
+$ head genomes/felCat9.fa
 >chrA1
 atcaggagatctagatgcctggagaggagtggagaaaacgggaaaccctc
 ttATGggaagaggtaatatgtatttctccttcgaatataaaaaaagtaaa
@@ -198,7 +210,9 @@ R.
 
 Put this in a text file and call it `genome_urls.txt`. These are the
 URLs for the FASTA files of our species.
+
 ```
+$ cat genome_urls.txt
 https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz
 https://hgdownload.soe.ucsc.edu/goldenPath/gorGor6/bigZips/gorGor6.fa.gz
 https://hgdownload.soe.ucsc.edu/goldenPath/mm39/bigZips/mm39.fa.gz
@@ -225,7 +239,7 @@ a $k$-mer frequency matrix.
 
 # The C++ code
 
-Let's first write a struct that will store $k$-mer frequencies for a
+Let us first write a struct that will store $k$-mer frequencies for a
 genome. We will use $k = 12$, and pre-allocate counts for all $4^{12}$
 possible $k$-mers. We will assume counts fit into a 32-bit integer,
 since $2^{32}$ is larger than any of the genomes we are using.
@@ -269,7 +283,7 @@ The function `shift_hash_key` simply shifts a k-mer two bits, appends
 a new letter to the end of it, then discards the first number by
 applying an AND (`&`) operation to the number
 `0b111111111111111111111111` (twenty-four 1s), which is `1 <<
-(2*KmerStats::kmer_Size) - 1`.
+(2*KmerStats::kmer_size) - 1`.
 
 ```cpp
 inline void
@@ -302,9 +316,8 @@ process_species(const string &file, KmerStats &v) {
   while (getline(in, line)) {
     if (line[0] != '>')
       copy(begin(line), end(line), back_inserter(chrom));
-    else {
+    else
       process_chrom(chrom, v);
-    }
   }
 
   process_chrom(chrom, v); // last chromosome after EOF
@@ -361,7 +374,8 @@ of files", which is a two-column file showing the species name in the
 first column and the path to its FASTA genome in the second. For
 example, this is a file called `genomes.txt`:
 
-```
+```bash
+$ cat genomes.txt
 chinese_hamster genomes/criGriChoV2.fa
 cat     genomes/felCat9.fa
 gorilla genomes/gorGor6.fa
@@ -372,8 +386,8 @@ whale genomes/balAcu1.fa
 ```
 
 And our `main` function simply reads this file and calls the functions
-we created. When done, our output will be a table with `4^{12}` rows and
-`n` columns, where `n` is the number of species. The element in row
+we created. When done, our output will be a table with $4^{12}$ rows and
+$n$ columns, where $n$ is the number of species. The element in row
 `i` and column `j` is the frequency of $k$-mer `i` (as its binary
 representation) in species `j`. This is a data frame that we can read
 into R:
@@ -399,12 +413,14 @@ main(int argc, const char **argv) {
     files.push_back(tmp2);
   }
   in.close();
-  omp_set_num_threads(8);
 
+  // print the headers: the species names, separated by tabs
   copy(begin(species), end(species), std::ostream_iterator<string>(cout, "\t"));
   cout << "\n";
-  // print the headers: the species names, separated by tabs
+
   vector<KmerStats> v(species.size());
+
+  omp_set_num_threads(8); // comment if OpenMP not used
 #pragma omp parallel for
   for (size_t i = 0; i < species.size(); ++i) {
 #ifdef VERBOSE
@@ -432,7 +448,7 @@ main(int argc, const char **argv) {
 
 ## Compiling the code
 
-We will create a `Makefile` to compile the program. If you don't have
+We will create a `Makefile` to compile the program. If you do not have
 OpenMP you can remove the `-fopenmp` flag below and the code will run
 single-thread. It will use less memory and more time, but it should
 still finish in a few minutes.
@@ -461,8 +477,8 @@ and run the program by writing
 
 ## Profiling the code
 
-We can further profile using `/usr/bin/time` to see how much time and
-memory it takes. Using 8 cores we get the following:
+We can further profile using `/usr/bin/time` (GNU time) to see how
+much time and memory it takes. Using 8 cores we get the following:
 
 ```bash
 $ /usr/bin/time -v ./phylo genomes.txt >kmer-counts.tsv
@@ -502,7 +518,7 @@ writing output
 So we used a little under 2 minutes and 1.6 GB to create our table. Note
 that the high memory use is because we used OpenMP to count the k-mers
 of all 7 species in parallel, so all `KmerStats` objects were loaded.
-Each `KmerStats` object allocates a vector of size `4^{12}` with 32
+Each `KmerStats` object allocates a vector of size $4^{12}$ with 32
 bits, so each takes 64 MB. Then each thread uses an additional 250 MB
 as pre-allocation for the chromosomes.
 
@@ -557,7 +573,8 @@ identical in all three genomes, but the correlation of $k$-mers in A
 and B implies that they are more similar. We can incorporate
 co-occurrences of sequences by modeling them as Markov chains, and
 comparing the Markov chain parameters instead of the $k$-mers
-directly. There is certainly a lot to improve in what we did.
+directly. There is certainly a lot to improvement avenues to explore,
+but our idea is a start.
 
 # Follow-up questions
 
