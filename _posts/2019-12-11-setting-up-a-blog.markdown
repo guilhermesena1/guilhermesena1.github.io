@@ -3,7 +3,7 @@ layout: post
 math: true
 title:  "Setting up a blog"
 date:   '2019-12-11'
-categories: rant
+categories: hello
 ---
 
 I am configuring this blog if I want to communicate, write or document things
