@@ -55,13 +55,13 @@ to add bases.
 
 # Why care?
 
-Palindromic DNA sequences are recurring themes in molecular biology.
-Consensus sequences that enzymes bind to are often palindromic.
-Examples include the [CpG dinucleotide]() that is the primary target
-for methylation, and the GAATTC motif that is bound by the [EcoRI
+Palindromic DNA sequences are recurring themes in molecular biology.  Consensus
+sequences that enzymes bind to are often palindromic.  Examples include the
+[CpG dinucleotide](https://en.wikipedia.org/wiki/CpG_site) that is the primary
+target for methylation, and the GAATTC motif that is bound by the [EcoRI
 restriction enzyme](https://en.wikipedia.org/wiki/EcoRI) in *E. coli*.
-Palindromic RNA transcripts can also form secondary structures by
-binding ends to form stable geometries.
+Palindromic RNA transcripts can also form secondary structures by binding ends
+to form stable geometries.
 
 Please note, however, that this specific problem does not have
 practical applications to my knowledge. We will not be building
