@@ -34,21 +34,18 @@ url: ''
 github:
   username: guilhermesena1 # change to your github username
 
-twitter:
-  username: senacompbio # change to your twitter username
-
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
   name: Guilherme Sena
-  email: desenabr@usc.edu             # change to your email address
+  email: guilhermesena1@proton.me
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/senacompbio # change to your twitter homepage
+    - https://bsky.app/profile/guilhermesena1.bsky.social # change to your twitter homepage
     - https://github.com/guilhermesena1 # change to your github homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
-    # - https://www.linkedin.com/in/username
+    - https://www.linkedin.com/in/guilhermesena1
 
 google_site_verification: google23fa0f88983501d9.html              # fill in to your verification string
 
