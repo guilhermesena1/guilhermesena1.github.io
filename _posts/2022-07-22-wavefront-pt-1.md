@@ -1,27 +1,28 @@
 ---
 layout: post
 math: true
-title:  "Wavefront alignments pt 1 : The Myers edit distance algorithm"
+title:  "Wavefront alignments and The Myers edit distance algorithm"
 date:   '2022-07-22'
 categories: C++ alignment-algorithms
 ---
 
-This is the first part of a two-part post that explains the [wavefront
-alignment
+This is post explores the basis for the [wavefront alignment
 algorithm](https://academic.oup.com/bioinformatics/article/37/4/456/5904262),
-a 2020 paper that finds the alignment between two sequences $A$ and $B$
-in $O((|A| + |B|)s)$, where $s$ is the alignment "distance". We
+a 2020 paper that finds the alignment between two sequences $A$ and
+$B$ in $O((|A| + |B|)s)$, where $s$ is the alignment "distance". We
 are using "distance" instead of "score" because these algorithms only
 make sense when the match score is 0 and the mismatch, indel and
 possibly gap-open scores are non-negative.
 
-In this first post, we will discuss the
+Instead of exploring the generalized version, in this post we will
+discuss the
 [algorithm](https://link.springer.com/article/10.1007/BF01840446)
-introduced by Prof. Gene Myers in 1986. This algorithm is also the
-basis of the `diff` tool in Linux, used to find the differences
-between two files.  I think this says volumes about the algorithm's
-relevance. Personally I can only dream of writing an algorithm that
-will be adopted by a GNU tool.
+introduced by Prof. Gene Myers in 1986. Besides being the foundation
+of the wavefront alignment, this algorithm is also the basis of the
+`diff` tool in Linux, used to find the differences between two files.
+I think this says volumes about the algorithm's relevance. Personally
+I can only dream of writing an algorithm that will be adopted by a GNU
+tool.
 
 # Motivation
 
