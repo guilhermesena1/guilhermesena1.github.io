@@ -11,7 +11,7 @@
 a {
   color: #FF6666;
   text-decoration: none;
-  border-bottom: none;
+  border-bottom: 0px !important;
 }
 
 #toc li a:hover, #toc li a.active, #toc li a:focus {
