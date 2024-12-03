@@ -1,7 +1,7 @@
 ---
 layout: post
 math: true
-title:  "Wavefront alignments and The Myers edit distance algorithm"
+title:  "Wavefront alignments and the Myers edit distance algorithm"
 date:   '2022-07-22'
 categories: C++ alignment-algorithms
 ---
