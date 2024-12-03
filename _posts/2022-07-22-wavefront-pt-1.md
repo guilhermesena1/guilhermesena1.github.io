@@ -186,7 +186,7 @@ possible edit distances until our answer), we compute the furthest
 reaching point when we are allowed $d'$ edits. When $d' = d$, we reach
 the endpoint $(m, n)$ and stop.
 
-# An short implementation of the algorithm
+# A short implementation of the algorithm
 
 Here is a C++ program that computes the edit distance between
 two strings passed on two lines of STDIN. The `edit_distance` function
