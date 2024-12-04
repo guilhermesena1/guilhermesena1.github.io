@@ -19,9 +19,9 @@ linear solution.  In computational biology, given the length of the
 sequences we work with, we often cannot afford to do worse than
 $O(n)$.
 
-**Problem**: Given a DNA sequence of length $n$, what is the minimum
-number of letters that must be added to the sequence to make it a
-palindrome? What is the resulting palindrome?
+**Problem**: Given a DNA sequence of length $n$, what is the minimum number of
+letters that must be appended to the end of the sequence to make it a
+DNA palindrome? What is the resulting palindrome?
 
 Note that a "biological" palindrome is not the same as a lexicographic
 palindrome. In english, a palindrome is a word or sentence that reads
@@ -213,5 +213,8 @@ I think it works! :)
 
 # Follow-up question
 
-Is there a sequence that is simultaneously a lexicographic palindrome
+1. (Easy) Is there a sequence that is simultaneously a lexicographic palindrome
 and a biological one? If so, show it, if not, prove it.
+
+2. (Hard) What if we could add letters to any part of the sequence, not just
+append to the end? What would be the shortest palindrome we could make?
