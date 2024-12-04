@@ -87,6 +87,7 @@ programming iteration:  $S[i, 0] = S[0, j] = 0$ and for $i, j > 0$:
 
 $$
 S[i, j] =
+\mathrm{max}
 \begin{cases}
 S[i - 1, j - 1] + s(A[i], B[j]) \\
 S[i - 1], j] - \delta \\
