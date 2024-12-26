@@ -83,7 +83,7 @@ decreasing function of $$\|p\|$$ from $$f(p)=0$$ if $$\|p\|=1$$ and $$f(p)=1/4$$
 when $$\|p\|=0$$. As should be expected, this argument expands to higher
 dimensions, where we can generalize that in dimension $$d$$, the probability
 that a simplex with $$d+1$$ vertices on the surface of a unit ball in
-$$\mathbb{R}^d$$ is $$2^{-d}$$. For example, for two dimensions, $$d = d$$ and
+$$\mathbb{R}^d$$ is $$2^{-d}$$. For example, for two dimensions, $$d = 2$$ and
 $$2^{-2}=1/4$$ as discussed. You can read more about the proof
 [here](https://mathworld.wolfram.com/SphereTetrahedronPicking.html).
 
