@@ -17,9 +17,9 @@ actually had no idea how to solve it. We had just covered various
 exact string matching algorithms, so they knew I was expecting a
 linear solution.  In computational biology, given the length of the
 sequences we work with, we often cannot afford to do worse than
-$O(n)$.
+$$O(n)$$.
 
-**Problem**: Given a DNA sequence of length $n$, what is the minimum number of
+**Problem**: Given a DNA sequence of length $$n$$, what is the minimum number of
 letters that must be appended to the end of the sequence to make it a
 DNA palindrome? What is the resulting palindrome?
 
@@ -38,30 +38,32 @@ lexicographic palindromes but not biological palindromes.
 
 # Examples
 
-1. `ATTGCTT` $\to$ `ATTGCTTAAGCAAT`. This is a "worst" case scenario
+1. `ATTGCTT` $$\to$$ `ATTGCTTAAGCAAT`. This is a "worst" case scenario
 and an example of why there is always a solution. If you
 reverse-complement the DNA sequence and append it to itself, it
 becomes a palindrome.
 
-2. `ATTGCA` $\to$ `ATTGCAAT`. This example is an almost palindrome,
+2. `ATTGCA` $$\to$$ `ATTGCAAT`. This example is an almost palindrome,
 and we only needed to add two bases to make it palindromic. Note that
 we could also have appended its reverse-complement, but the resulting
 sequence `ATTGCATGCAAT` is much longer than the optimal answer.
 
-3. `ACGT` $\to$ `ACGT`. This one is already a palindrome, so no need
+3. `ACGT` $$\to$$ `ACGT`. This one is already a palindrome, so no need
 to add bases.
 
-4. `AAAA` $\to$ `AAAATTTT`
+4. `AAAA` $$\to$$ `AAAATTTT`
 
 # Why care?
 
 Palindromic DNA sequences are recurring themes in molecular biology.  Consensus
-sequences that enzymes bind to are often palindromic.  Examples include the
-[CpG dinucleotide](https://en.wikipedia.org/wiki/CpG_site) that is the primary
-target for methylation, and the GAATTC motif that is bound by the [EcoRI
-restriction enzyme](https://en.wikipedia.org/wiki/EcoRI) in *E. coli*.
-Palindromic RNA transcripts can also form secondary structures by binding ends
-to form stable geometries.
+sequences that enzymes bind to are often palindromic.  Examples include the [CpG
+dinucleotide](https://en.wikipedia.org/wiki/CpG_site) that is the primary target
+for methylation, and the GAATTC motif that is bound by the [EcoRI restriction
+enzyme](https://en.wikipedia.org/wiki/EcoRI) in *E. coli*.  Palindromic RNA
+transcripts can also form secondary structures by binding ends to form stable
+geometries. In the enzymatic case, this is not by chance, as a palindromic DNA
+suggest that it matters not in which strand of the DNA the enzyme binds to,
+making it easier for it to find the motif of interest.
 
 Please note, however, that this specific problem does not have
 practical applications to my knowledge. We will not be building

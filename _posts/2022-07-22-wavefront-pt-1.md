@@ -8,8 +8,8 @@ categories: C++ alignment-algorithms
 
 This is post explores the basis for the [wavefront alignment
 algorithm](https://academic.oup.com/bioinformatics/article/37/4/456/5904262),
-a 2020 paper that finds the alignment between two sequences $A$ and
-$B$ in $O((|A| + |B|)s)$, where $s$ is the alignment "distance". We
+a 2020 paper that finds the alignment between two sequences $$A$$ and
+$$B$$ in $$O((|A| + |B|)s)$$, where $$s$$ is the alignment "distance". We
 are using "distance" instead of "score" because these algorithms only
 make sense when the match score is 0 and the mismatch, indel and
 possibly gap-open scores are non-negative.
@@ -38,8 +38,8 @@ efficient implementations of alignment algorithms.
 
 The Needleman-Wunsch and Smith-Waterman alignment algorithms are the
 only ones guaranteed to find optimal global and local alignment,
-respectively, of sequences $A$ and $B$ for arbitrary scoring schemes.
-They are also $\Theta(|A| |B|)$, meaning that, whether $A$ and $B$ are
+respectively, of sequences $$A$$ and $$B$$ for arbitrary scoring schemes.
+They are also $$\Theta(|A| |B|)$$, meaning that, whether $$A$$ and $$B$$ are
 very similar or very different, the number of operations is the same:
 We have to fill out the entire traceback matrix to find our answer,
 either as the score at the bottom-right element in the matrix (global
@@ -90,22 +90,22 @@ form of alignment of all: the *edit distance*.
 
 # Edit distance problem formulation
 
-The *edit distance* $D(A, B)$ between strings $A$ and $B$ is the
-number of substitutions, deletions and insertions of characters in $A$
-to make it identical to $B$. Obviously edit distance is a symmetric,
-that is, $D(A,B) = D(B,A)$. In fact, edit distance is a metric (can
+The *edit distance* $$D(A, B)$$ between strings $$A$$ and $$B$$ is the
+number of substitutions, deletions and insertions of characters in $$A$$
+to make it identical to $$B$$. Obviously edit distance is a symmetric,
+that is, $$D(A,B) = D(B,A)$$. In fact, edit distance is a metric (can
 you think of a proof for the triangle inequality?). Similar to
-alignments, edit distances can be computed in $O(|A| |B|)$ time. Let
-$A = a_1, \dots a_m$ and $B = b_1, \dots, b_n$ be two strings and for
-string $S$, $S[i]$ denote the prefix of $S$ with the first $i$
-characters, with $S[0]$ being the empty string, then the edit distance
-$D[i, j]$ of prefix $A[i]$ with prefix $B[j]$ is given by $D[i, 0] =
-i$, $D[0, j] = j$ and $D[i, j] = D[i - 1, j - 1]$ if $A[i] = B[j]$,
-or $D[i, j] = 1 + \mathrm{min}(D[i - 1, j - 1], D[i - 1, j],
-D[i, j-1])$ otherwise. Those who have seen the [Smith-Waterman
+alignments, edit distances can be computed in $$O(|A| |B|)$$ time. Let
+$$A = a_1, \dots a_m$$ and $$B = b_1, \dots, b_n$$ be two strings and for
+string $$S$$, $$S[i]$$ denote the prefix of $$S$$ with the first $$i$$
+characters, with $$S[0]$$ being the empty string, then the edit distance
+$$D[i, j]$$ of prefix $$A[i]$$ with prefix $$B[j]$$ is given by $$D[i, 0] =
+i$$, $$D[0, j] = j$$ and $$D[i, j] = D[i - 1, j - 1]$$ if $$A[i] = B[j]$$,
+or $$D[i, j] = 1 + \mathrm{min}(D[i - 1, j - 1], D[i - 1, j],
+D[i, j-1])$$ otherwise. Those who have seen the [Smith-Waterman
 recursion](https://guilhermesena1.github.io/posts/possibly-the-most-naive-phylogenetic-reconstruction-algorithm)
 should find this recursion familiar, with the exception that we always
-use $D[i-1, j-1]$ if there is a match, but sometimes we also take
+use $$D[i-1, j-1]$$ if there is a match, but sometimes we also take
 diagonals for substitutions of characters.
 
 **A quick note on our definition of edit distance:**
@@ -122,69 +122,69 @@ be 1 (substitute `B` with `A`).
 
 # The Myers algorithm for edit distance calculation
 
-If we are simply interested in the edit distance between $A$ and $B$,
-we only care about the value $D[m, n]$. In the recursion above, note
-that we always take the diagonal when $A[i] = B[j]$. In other words,
-the traceback of $D[m, n]$ is composed of vertical lines, horizontal
+If we are simply interested in the edit distance between $$A$$ and $$B$$,
+we only care about the value $$D[m, n]$$. In the recursion above, note
+that we always take the diagonal when $$A[i] = B[j]$$. In other words,
+the traceback of $$D[m, n]$$ is composed of vertical lines, horizontal
 lines, and a series of diagonals where there are huge runs of matches
-between substrings of $A$ and $B$. We can take advantage of these
+between substrings of $$A$$ and $$B$$. We can take advantage of these
 large diagonals if we rethink the edit distance problem appropriately.
 
 From the Myers paper:
->"In practical situations, it is usually the parameter $d$ that is small.
+>"In practical situations, it is usually the parameter $$d$$ that is small.
 Programmers wish to know how they have altered a text file. Biologists
 wish to know how one DNA stand has mutated into another."
 
 The idea of the Myers algorithm is to take advantage of these runs of
 diagonals by parametrizing the problem not by the prefix of the two
-strings, but by the diagonals of the edit distance matrix $D$. First,
-we denote $m + n - 1$ diagonals of the matrix by how far off they are
-from the main diagonal, so $k = 0$ is the main diagonal, $k = 1$ is
-one diagonal below the main, and $k = -1$ is one diagonal to the right
-of the main. In other words, the cells in diagonal $k$ are the cells
-$(x, y)$ where $x - y = k$.
+strings, but by the diagonals of the edit distance matrix $$D$$. First,
+we denote $$m + n - 1$$ diagonals of the matrix by how far off they are
+from the main diagonal, so $$k = 0$$ is the main diagonal, $$k = 1$$ is
+one diagonal below the main, and $$k = -1$$ is one diagonal to the right
+of the main. In other words, the cells in diagonal $$k$$ are the cells
+$$(x, y)$$ where $$x - y = k$$.
 
 We will show that, with this parametrization, we can find the edit
-distance of $A$ and $B$ in $\Theta((m + n) d)$, where $m$ is the
-length of $A$, $n$ is the length of $B$ and $d$ is the edit distance
-between $A$ and $B$. This is much faster than the traditional $\Theta (mn)$
-when $A$ and $B$ are expected to be similar, and not asymptotically
-different when that is the case since $d \leq \mathrm{max}(m, n)$ when
-substitutions only count as one edit and $d \leq m + n$ when we only
+distance of $$A$$ and $$B$$ in $$\Theta((m + n) d)$$, where $$m$$ is the
+length of $$A$$, $$n$$ is the length of $$B$$ and $$d$$ is the edit distance
+between $$A$$ and $$B$$. This is much faster than the traditional $$\Theta (mn)$$
+when $$A$$ and $$B$$ are expected to be similar, and not asymptotically
+different when that is the case since $$d \leq \mathrm{max}(m, n)$$ when
+substitutions only count as one edit and $$d \leq m + n$$ when we only
 allow insertions and deletions (the Myers definition).
 
 ### The furthest-reaching point of diagonals
 
-For diagonal $k$, let $V[d, k]$ be the *furthest reaching point* from
-the origin of diagonal $k$ when we are allowed $d$ non-diagonal
-changes (e.g. only insertions and deletions). In other words, $V$ is a
-pair of coordinates $(x, y)$ where $x$ (or $y$) is maximum and $(x, y)$ can
-be reached from $(k, 0)$ (if $k \geq 0)$ or $(0, -k)$ (if $k < 0$)
-with $d$ edits. Then the edit distance of $A$ and $B$ is the minimum
-value of $d$ for which $V[d, k] = (m, n)$ for some $k$.
+For diagonal $$k$$, let $$V[d, k]$$ be the *furthest reaching point* from
+the origin of diagonal $$k$$ when we are allowed $$d$$ non-diagonal
+changes (e.g. only insertions and deletions). In other words, $$V$$ is a
+pair of coordinates $$(x, y)$$ where $$x$$ (or $$y$$) is maximum and $$(x, y)$$ can
+be reached from $$(k, 0)$$ (if $$k \geq 0)$$ or $$(0, -k)$$ (if $$k < 0$$)
+with $$d$$ edits. Then the edit distance of $$A$$ and $$B$$ is the minimum
+value of $$d$$ for which $$V[d, k] = (m, n)$$ for some $$k$$.
 
 The key idea for the algorithm is that, for any diagonal the furthest
-reaching point with $d$ edits can be constructed easily from the
-furthest reaching points with $d - 1$ edits.  First, if $d = 0$, $V[0,
-k]$ is found by the largest series of matches between either the
-suffix of $A$ starting at $k$ and $B$ or the suffix of $B$ starting at
-$k$ and $A$ (depending on the sign of $k$).  For $d > 0$, we can
+reaching point with $$d$$ edits can be constructed easily from the
+furthest reaching points with $$d - 1$$ edits.  First, if $$d = 0$$, $$V[0,
+k]$$ is found by the largest series of matches between either the
+suffix of $$A$$ starting at $$k$$ and $$B$$ or the suffix of $$B$$ starting at
+$$k$$ and $$A$$ (depending on the sign of $$k$$).  For $$d > 0$$, we can
 proceed as follows.  Start with the furthest reaching points of
-$V[d-1, k-1]$, $V[d-1, k]$ and $V[d-1, k+1]$, both of which are one
-cell away from the diagonal $k$. Then we have a starting point at $k$
+$$V[d-1, k-1]$$, $$V[d-1, k]$$ and $$V[d-1, k+1]$$, both of which are one
+cell away from the diagonal $$k$$. Then we have a starting point at $$k$$
 either by going one cell to the left, one cell down, or one diagonal
 cell from these two points, since these will increment one extra edit
-to get to diagonal $k$. Pick whichever of the two is furthest in
-diagonal $k$ to the origin, then go down diagonal $k$ on the series of
-matches between $A$ and $B$ until the first mismatch is found. When we
-find the point $(m, n)$ as the furthest reaching point for some pair
-$(d, k)$, the edit distance is $d$.
+to get to diagonal $$k$$. Pick whichever of the two is furthest in
+diagonal $$k$$ to the origin, then go down diagonal $$k$$ on the series of
+matches between $$A$$ and $$B$$ until the first mismatch is found. When we
+find the point $$(m, n)$$ as the furthest reaching point for some pair
+$$(d, k)$$, the edit distance is $$d$$.
 
-The algorithm takes $O((m+n)d)$  time and, if we are only interested
-in $d$, it takes $O(m+n)$ space. For $0 \leq d' \leq d$ (i.e. all
+The algorithm takes $$O((m+n)d)$$  time and, if we are only interested
+in $$d$$, it takes $$O(m+n)$$ space. For $$0 \leq d' \leq d$$ (i.e. all
 possible edit distances until our answer), we compute the furthest
-reaching point when we are allowed $d'$ edits. When $d' = d$, we reach
-the endpoint $(m, n)$ and stop.
+reaching point when we are allowed $$d'$$ edits. When $$d' = d$$, we reach
+the endpoint $$(m, n)$$ and stop.
 
 # A short implementation of the algorithm
 
@@ -330,7 +330,7 @@ Looks like it's less than 1% now! The more we compare, the more
 similar they become (though the number of edits is still increasing,
 which is encouraging to confirm that the algorithm is working).
 
-Do note that 40M reads would require $\approx 10^{15}$ operations in
+Do note that 40M reads would require $$\approx 10^{15}$$ operations in
 the traditional edit distance algorithm proposed in the start of this
 post, so we made good progress for similar sequences apparently :)
 
