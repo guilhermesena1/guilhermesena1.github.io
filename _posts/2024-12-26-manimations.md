@@ -209,7 +209,13 @@ print("%s %s %s" % (s, lim, s/lim))
 # 249858 1000000 0.249858
 ```
 
-My next step is to animate in such way that the triangle rotates its points
-around the corner of the circle instead of a linear interpolation.
+Finally, another less algebraic way to see that the probability is $$1/4$$ is,
+as you vary $$\theta_1$$ from $$0$$ to $$\pi$$, the range of values of
+$$\theta_2$$ varies as the image below, and you can clearly see that, since
+complementary angles add to half of the circumference arc, the average is a
+quarter of the circumference (I did that animation with manim too!).
+
+![visualization of theta_2 as we vary theta_1](https://i.ibb.co/bmw1whS/example2.gif)
+
 
 
