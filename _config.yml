@@ -23,7 +23,7 @@ timezone:
 
 title: Guilherme Sena # the main title
 
-tagline: Create. Not for money, fame or recognition, but for the pure joy of creating something and sharing it.   # it will display as the sub-title
+tagline: Posts about computational biology for the pure joy of it.   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   A minimal, responsive, and powerful Jekyll theme for presenting professional writing.
