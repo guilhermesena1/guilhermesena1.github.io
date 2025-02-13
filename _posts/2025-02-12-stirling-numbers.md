@@ -26,13 +26,14 @@ boxes?
 For example if $$\alpha=0.95$$, $$k=2$$ and $$r=1$$. There are two
 boxes and we want at least one marble in each box. Obviously it must
 be that $$C \geq k \times r = 2$$ given the problem constraints. For
-$C=2$, with 50% probability, both marbles are dropped in one of the
+$$C=2$$, with 50% probability, both marbles are dropped in one of the
 boxes. With $$C=3$$, we only fail if all 3 marbles are dropped in
 either box, which happens with probability $$2/(2^3)$$. Continuing
 this logic we need the smallest $$C$$ for which $$2/(2^C) \leq 1 -
-\alpha = 0.05$$, which happens for $$C \geq 6$$. Try doing this
-exercise for $$k=3$$ and $$r=1$$ and your brain may start to hurt a
-bit. Try for $$k=3$$ and $$r=2$$ and you may, like I almost did, toss
+\alpha = 0.05$$, which happens for $$C \geq 6$$.
+
+Try doing this exercise for $$k=3$$ and $$r=1$$ and your brain may start to
+hurt a bit. Try for $$k=3$$ and $$r=2$$ and you may, like I almost did, toss
 your notebook out the window trying to find a generalizable formula.
 
 ## The "box problem" in bioinformatics
@@ -99,7 +100,7 @@ some marbles in most boxes given a sufficient number of marbles
 
 ## Bell number
 
-The number of ways to partition a set with $n$-set $$\{1, 2, \dots,
+The number of ways to partition a set with $$n$$-set $$\{1, 2, \dots,
 n\}$$ is the [Bell number](https://en.wikipedia.org/wiki/Bell_number)
 $$B_n$$.The first Bell numbers are $$(B_1, B_2, B_3, B_4, B_5) = (1,
 2, 5, 15, 52)$$.  For example, $$B_2 = 2$$ because the only ways to
@@ -113,9 +114,9 @@ $$
 B_{n+1} = \sum_{m=0}^{n} {n \choose m} B_m.
 $$
 
-This stems from the fact that, for any of the $B_{n+1}$ partitions,
+This stems from the fact that, for any of the $$B_{n+1}$$ partitions,
 removing the partition containing the first element leaves a partition
-of a smaller number $m$ of elements. There are $${n \choose m}$$ ways
+of a smaller number $$m$$ of elements. There are $${n \choose m}$$ ways
 to decide which elemens are part of the smaller set (all the other
 elements are part of the removed set) and $$B_{m}$$ ways of
 partitioning them.
@@ -173,7 +174,7 @@ S(n+1, k)_{\geq r} = \sum_{i=r-1}^{n} {n \choose i}S(n-i,k-1)_{\geq r}
 $$
 
 What I find most fascinating about this formula is that **the
-recurrence does not need to be parametrized by $$r$$!**. In other
+recurrence does not need to be parametrized by $$r$$ (!!!)**. In other
 words, you do not need the solution for smaller or larger values of
 $$r$$ to calculate the solution for $$r$$. The right-most formula of
 the above equation leads to a very simple $$O(Ck)$$ space and time
@@ -184,7 +185,7 @@ parameters.
 Finally, our solution. Any distribution of marbles is a partition of
 the $$n$$-set into **at most** $$k$$ subsets, so $$D = \sum_{i=1}^{k}
 S(C,i)$$. The number of such partitions that attain sufficient
-coverage is $$S(C,k)_{\geq r}$$ and our probability is $$N/D$$. We can
+coverage is $$N=S(C,k)_{\geq r}$$ and our probability is $$N/D$$. We can
 binary search the smallest value of $$C$$ for which $$N/D \geq
 \alpha$$ and we are done. We can now plan coverages by finding lower
 bounds in $$O(Ck \log C)$$ to match our expected experimental outcome.
