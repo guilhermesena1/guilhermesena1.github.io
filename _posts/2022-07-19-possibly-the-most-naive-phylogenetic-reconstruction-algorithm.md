@@ -3,7 +3,7 @@ layout: post
 math: true
 title:  "The most naive phylogenetic reconstruction algorithm"
 date:   '2022-07-18'
-categories: C++ phylogenetics
+categories: C++ R phylogenetics
 ---
 
 The full source code for this post can be found on

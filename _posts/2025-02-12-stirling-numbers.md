@@ -3,7 +3,7 @@ layout: post
 math: true
 title:  "Stirling numbers and a useful combinatorics problem for bioinformatics"
 date:   '2025-02-12'
-categories: combinatorics bioinformatics
+categories: combinatorics bioinformatics R
 ---
 
 It never ceases to amaze me that sometimes in combinatorics the
@@ -162,7 +162,7 @@ in the denotation). This generalization is only natural. If we can
 find a formula or a recurrence for these numbers, our numerator is
 $$S(C,k)_{\geq r}$$ and we are done, and that is exactly what [Komatsu
 et al](https://arxiv.org/abs/1510.05799) found in their 2015 paper. A
-huge thank you to the [set partitions](https://setpartitions.org)
+huge thank you to the [set partitions](https://setpartitions.org/associated-stirling)
 website for bringing this paper to my attention!
 
 Our recurrence of interest is $$S(n,0)_{\geq r} =0$$, $$S(0,0)_{\geq
@@ -190,5 +190,48 @@ binary search the smallest value of $$C$$ for which $$N/D \geq
 \alpha$$ and we are done. We can now plan coverages by finding lower
 bounds in $$O(Ck \log C)$$ to match our expected experimental outcome.
 
+# Examples
+
+Below is an implementation in `R` that returns the probability of a
+successful experiment with coverage $$C$$, $$k$$ copies and a minimum
+of $$r$$ reads, with both the numerator and denominator separately. We
+use the gmp library for big arithmethics since many of the numbers
+will explode R's numeric limits of 64 bits.
+
+
+```R
+prob.mult <- function(C,K,r) {
+  library(gmp)
+  denom <- as.bigz(0)
+  for (i in 1:K) {
+    denom <- denom + gmp::Stirling2(C,i)
+  }
+
+  S <- array(as.bigz(0), dim = c(C + 1, K + 1))
+  S[1,1] <- 1
+  for (k in 1:K) {
+    for (n in 0:(C-1)) {
+      if (n + 2 > r) {
+        # shift every dimension by 1 because R is 1-based
+        S[n + 2, k + 1] <- k*S[n + 1, k + 1] +
+	                   choose(n, r - 1)*S[n - r + 2, k]
+      }
+    }
+  }
+  return(list(
+    num = S[C + 1, K + 1],
+    denom = denom,
+    prob = as.numeric(num/denom)
+  )
+}
+```
+
+Let us set $$k=6$$. This is the minimum coverage required for $$r$$
+varying from $$1$$ to $$20$$ for $$\alpha = 0.95$$ and $$\alpha =
+0.99$$, which are typical probability guarantees we expect
+
+![coverage distribution](https://i.ibb.co/qY5QqKDf/coverages.png)
+
 Please visit [set partitions](https://setpartitions.org)!!!
+
 
